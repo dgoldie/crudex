@@ -41,7 +41,7 @@ defmodule CrudexTest do
 
   describe "test crudex resources" do
 
-    test "Context has all functions are generated", context do
+    test "Generated all all functions in Context", context do
       for func <- context[:crud] do
         context[:functions]
         |> Keyword.has_key?(func)
