@@ -25,7 +25,7 @@ defmodule CrudexTest do
   end
 
   defmodule Sample do
-    use Crudex
+    use Crudex, repo: Repo
     resources Post
   end
 

@@ -4,31 +4,49 @@ defmodule Crudex do
   """
 
   @doc false
-  defmacro __using__(_options) do
+  defmacro __using__(opts) do
     quote do
+      IO.puts "In using's context (#{__MODULE__})."
+      IO.puts "repo is #{unquote((opts)[:repo])}"
+      # alias unquote((opts)[:repo])
+
       import unquote(__MODULE__)
       import Ecto.Query, warn: false
+      # Module.register_attribute(__MODULE__, :repo, accumulate: true)
+      # alias! (opts)[:repo]
+      # IO.puts "module split is #{Module.split(unquote(opts)[:repo])}"
+      # alias unquote Module.split(__CALLER__.module)
+      #                 |> List.replace_at(-1, "Baz")
+      #                 |> Module.concat
     end
   end
 
   defmacro resources(table) do
-    # IO.puts "In macro's context (#{__MODULE__})."
-    # IO.puts "table is #{ Macro.to_string table}"
+    IO.puts "In macro's context (#{__MODULE__})."
+    IO.puts "table is #{ Macro.to_string table}"
+    # IO.inspect "repo is #{inspect @repo}"
+
+    # quote do
+    #   alias unquote(@repo)
+    # end
 
     quote bind_quoted: [table: table] do
-      # IO.puts "In caller's context (#{__MODULE__})."
-      # IO.puts "table is #{inspect table}"
-      # IO.inspect apply(table, :__schema__, [:source])
-      # IO.inspect Module.split table
+      IO.puts "In caller's context (#{__MODULE__})."
+      IO.puts "table is #{inspect table}"
+      IO.inspect apply(table, :__schema__, [:source])
+      IO.inspect Module.split table
+      # IO.inspect "repo is #{inspect hd(@repo)}"
+
+
 
 
       source = apply(table, :__schema__, [:source])
-      # IO.puts "source is #{source}"
+      IO.puts "source is #{source}"
       single_source = table
                       |> Module.split
                       |> List.last
                       |> String.downcase
-      # IO.puts "single source is #{single_source}"
+      IO.puts "single source is #{single_source}"
 
       # list
       list_name = String.to_atom("list_#{source}")
