@@ -8,11 +8,11 @@ defmodule Crudex do
     quote do
       IO.puts "In using's context (#{__MODULE__})."
       IO.puts "repo is #{unquote((opts)[:repo])}"
+      # Module.register_attribute(__MODULE__, :repo, accumulate: true)
       @repo unquote((opts)[:repo])
 
       import unquote(__MODULE__)
       import Ecto.Query, warn: false
-      # Module.register_attribute(__MODULE__, :repo, accumulate: true)
     end
   end
 
@@ -20,15 +20,10 @@ defmodule Crudex do
     IO.puts "In macro's context (#{__MODULE__})."
     IO.puts "table is #{ Macro.to_string table}"
 
-
     quote bind_quoted: [table: table] do
       IO.puts "In caller's context (#{__MODULE__})."
       IO.puts "...table is #{inspect table}"
-      # IO.inspect apply(table, :__schema__, [:source])
-      # IO.inspect Module.split table
       IO.puts "...repo is #{inspect @repo}"
-
-
 
 
       source = apply(table, :__schema__, [:source])
@@ -57,7 +52,7 @@ defmodule Crudex do
        @repo.get!(unquote(table), id)
       end
 
-      #create
+      # create
       create_name = String.to_atom("create_#{single_source}")
       def unquote(create_name)(attrs \\ %{}) do
         unquote(table).__struct__
@@ -65,7 +60,7 @@ defmodule Crudex do
         |> @repo.insert()
       end
 
-      #update
+      # update
       update_name = String.to_atom("update_#{single_source}")
       table_struct = table.__struct__
       def unquote(update_name)(table_struct = record, attrs) do
